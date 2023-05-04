@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>문화시설 테스트</h1>
+    <input id="search" type="text" value="">
+    <button id="button1" onclick="getdata()">검색</button>
+    <div id="results"></div>
+    <script>
+        function getdata() {
+            fetch('https://apis.data.go.kr/6260000/AttractionService/getAttractionKr?serviceKey=dvxaXfX6hB3M%2Fhizzw%2BrCC5c9677ILG8ULWYM7y7R5YLKbl332xtCDxaJGj3TBALyf9sGSQktMV5W3hSS60fJg%3D%3D&pageNo=1&numOfRows=123&resultType=json')
+                .then((response) => response.json())
+                .then((data) => {
+                    var search = document.getElementById("search").value;
+                    var results = [];
+
+                    for (let i = 0; i < data['getAttractionKr']['item'].length; i++) {
+                        var str = "문화시설이름: " + data['getAttractionKr']['item'][i]['MAIN_TITLE'] + "/ " + data['getAttractionKr']['item'][i]['TITLE'] + "<br>" +
+                            "주소: " + data['getAttractionKr']['item'][i]['ADDR1'] + "<br>" + "전화번호: " + data['getAttractionKr']['item'][i]['CNTCT_TEL'] + "<br>" +
+                            "운영시간: " + data['getAttractionKr']['item'][i]['USAGE_DAY_WEEK_AND_TIME'] + "<br>" + "요금정보: " + data['getAttractionKr']['item'][i]['USAGE_AMOUNT'];
+
+                        var str2 = data['getAttractionKr']['item'][i]['MAIN_IMG_THUMB'];
+
+                        // let search = document.getElementById("search").value;
+                        if (str.includes(search)) {
+                            results.push({ str: str, str2: str2 }); // 결과를 객체로 저장
+                        }
+                        if (results.length === 123) {  // 검색 결과가 10개일 경우 루프 종료
+                            break;
+                        }
+                    }
+
+                    var resultsDiv = document.getElementById("results");
+                    resultsDiv.innerHTML = ""; // 이전 검색 결과 초기화
+
+                    for (let i = 0; i < results.length; i++) { // 결과 배열의 각 항목을 반복문으로 출력
+                        var resultDiv = document.createElement("div");
+                        resultDiv.innerHTML = "<br>" + results[i].str + "<br>" + "<br>";
+                        var img = document.createElement("img");
+                        img.src = results[i].str2;
+                        resultDiv.appendChild(img);
+                        resultsDiv.appendChild(resultDiv);
+                    }
+
+                });
+        }
+    </script>
+</body>
+
+</html>
